@@ -1,0 +1,504 @@
+import random, time
+
+#player stats
+playerHealth = 100
+playerAttack = 10
+playerArmor = 0
+equippedItem = None
+move1 = "attack"
+move2 = "dodge"
+move3 = "counter"
+move4 = "heal"
+move5 = "spell"
+gold = 0
+
+#inputs
+shopBrowse = ["Weapons", "Armor", "Spells", "Back"]
+invBrowse = ["Weapons", "Armor", "Spells", "Back"]
+
+#effect variables
+onFire = 0
+bleeding = 0
+onFireMax = 0
+poisoned = False
+
+#weapons
+woodOwned = False
+stoneOwned = False
+
+#armor
+leatherArOwned = False
+chainArOwned = True
+
+#attack types
+poisonAttacks = ["poisoned claymore"]
+skipAttacks = ["draconic roar", "spider web"]
+fireAttacks = ["fire ball", "fire spray"]
+bleedAttacks = ["spiky club"]
+
+#shop items
+weapons = ("wooden sword","stone sword")
+armor = ("leather armor", "chainmail armor")
+
+actions = ("attack", "heal", "counter", "dodge")
+enemyOptions = ("Slime", "Skeleton", "Goblin", "Orc", "Spider", "Wizard","Dragon","Troll")
+gameStartStop = False
+enemy = None
+dodgeSuccess = False
+playerRoll = 0
+botRoll = 0
+profit = 0
+randEnemy = None
+playerAct = True
+playerName = None
+
+print ("\n _______  _______           _______  _______  _______    _______  _______    _______          _________ _______   \n"      
+"(  ____ \(  ____ \|\     /|(  ___  )(  ____ \(  ____ \  (  ___  )(  ____ \  (  ____ \|\     /|\__   __/(  ___  )|\     /|\n"
+"| (    \/| (    \/| )   ( || (   ) || (    \/| (    \/  | (   ) || (    \/  | (    \/( \   / )   ) (   | (   ) |( \   / )\n"
+"| (__    | |      | (___) || |   | || (__    | (_____   | |   | || (__      | (_____  \ (_) /    | |   | (___) | \ (_) /\n" 
+"|  __)   | |      |  ___  || |   | ||  __)   (_____  )  | |   | ||  __)     (_____  )  \   /     | |   |  ___  |  ) _ (\n" 
+"| (      | |      | (   ) || |   | || (            ) |  | |   | || (              ) |   ) (      | |   | (   ) | / ( ) \ \n" 
+"| (____/\| (____/\| )   ( || (___) || (____/\/\____) |  | (___) || )        /\____) |   | |      | |   | )   ( |( /   \ )\n"
+"(_______/(_______/|/     \|(_______)(_______/\_______)  (_______)|/         \_______)   \_/      )_(   |/     \||/     \|\n"
+                                                                                                                         )
+
+def invSection():
+    global equippedItem, playerAttack, playerArmor
+    global woodOwned, stoneOwned
+    print(f"{'-' * 50}")
+    invCategory = input("What category would you like to check? (Weapons, Armor, Spells, Back): ").capitalize()
+    if invCategory not in invBrowse:
+        while invCategory not in invBrowse:
+            invCategory = input("Please select a category. (Weapons, Armor, Spells, Back): ").capitalize()
+
+    #weapons
+    if invCategory == "Weapons":
+        weaponInvChoice = input("Which weapon do you want to see?\n\nWooden Sword\nStone Sword: ").lower()
+        if weaponInvChoice not in weapons:
+            while weaponInvChoice not in weapons:
+                weaponInvChoice = input("Please select a weapon.\n\nWooden Sword\nStone Sword: ").lower()
+
+        #wooden sword
+        if weaponInvChoice == "wooden sword":
+            weaponInvChoice = input("What would you like to do? (Check, Equip, Back): ").capitalize()
+            if weaponInvChoice == "Check":
+                print("ATK: 15")
+            if weaponInvChoice == "Equip":
+                if woodOwned is True:
+                    print("Item Equipped!")
+                    equippedItem = "Wooden Sword"
+                    playerAttack = 15
+                elif woodOwned is False:
+                    print("You don't have this item. Buy it in the Shop!")
+                elif equippedItem == "Wooden Sword":
+                    print("This item is already equipped.")
+
+        #stone sword
+        elif weaponInvChoice == "stone sword":
+            weaponInvChoice = input("What would you like to do? (Check, Equip, Back): ").capitalize()
+            if weaponInvChoice == "Check":
+                print("ATK: 23")
+            if weaponInvChoice == "Equip":
+                if stoneOwned is True:
+                    print("Item Equipped!")
+                    equippedItem = "Stone Sword"
+                    playerAttack = 23
+                elif stoneOwned is False:
+                    print("You don't have this item. Buy it in the Shop!")
+                elif equippedItem == "Stone Sword":
+                    print("This item is already equipped.")
+
+
+    #armor
+    if invCategory == "Armor":
+        armorInvChoice = input("Which armor do you want to see?\n\nLeather Armor\nChainmail Armor: ").lower()
+        if armorInvChoice not in armor:
+            while armorInvChoice not in armor:
+                armorInvChoice = input("Please select an armor.\n\nLeather Armor\nChainmail Armor: ").lower()
+
+
+        #leather armor
+        if armorInvChoice == "leather armor":
+            armorInvChoice = input("What would you like to do? (Check, Equip, Back): ").capitalize()
+            if armorInvChoice == "Check":
+                print("DEF: 5")
+            if armorInvChoice == "Equip":
+                if leatherArOwned is True:
+                    print("Item Equipped!")
+                    equippedItem = "Leather Armor"
+                    playerArmor = 5
+                elif leatherArOwned is False:
+                    print("You don't have this item. Buy it in the Shop!")
+                elif equippedItem == "Leather Armor":
+                    print("This item is already equipped.")
+
+        #chainmail armor
+        if armorInvChoice == "chainmail armor":
+            armorInvChoice = input("What would you like to do? (Check, Equip, Back): ").capitalize()
+            if armorInvChoice == "Check":
+                print("DEF: 10")
+            if armorInvChoice == "Equip":
+                if chainArOwned is True:
+                    print("Item Equipped!")
+                    equippedItem = "Chainmail Armor"
+                    playerArmor = 10
+                elif leatherArOwned is False:
+                    print("You don't have this item. Buy it in the Shop!")
+                elif equippedItem == "Chainmail Armor":
+                    print("This item is already equipped.")
+
+
+def shopSection():
+    global gold
+    global woodOwned, stoneOwned
+    global leatherArOwned, chainArOwned
+    print(f"{'-' * 50}")
+    print(f"Welcome, {playerName}")
+    print(f"You have {gold} gold.")
+    category = input("Which category do you want to browse? (Weapons, Armor, Spells, Back): ").capitalize()
+    if category not in shopBrowse:
+        while category not in shopBrowse:
+            category = input("Please select a category. (Weapons, Armor, Spells, Back): ").capitalize()
+
+    #weapons
+    if category == "Weapons":
+        weaponShopChoice = input("Which weapon do you want to see?\n\nWooden Sword\nStone Sword: ").lower()
+        if weaponShopChoice not in weapons:
+            while weaponShopChoice not in weapons:
+                weaponShopChoice = input("Please select a weapon.˛\n\nWooden Sword\nStone Sword: ").lower()
+
+        #wooden sword
+        if weaponShopChoice == "wooden sword":
+            print("Cost: 5 gold\nAttack damage: 15\nNo special effects")
+            weaponShopChoice = input("(Buy, Back): ").capitalize()
+            if weaponShopChoice == "Buy":
+                if gold >= 5:
+                    gold -= 5
+                    stoneOwned = True
+                    print("Purchase successful! Equip your item in the inventory!")
+                else:
+                    print("You don't have enough gold! Come back when you're a little... hmmm... richer.")
+            elif weaponShopChoice == "Back":
+                shopSection()
+            else:
+                shopSection()
+
+        #stone sword
+        if weaponShopChoice == "stone sword":
+            print("Cost: 10 gold\nAttack damage: 23\nNo special effects")
+            weaponShopChoice = input("(Buy, Back): ").capitalize()
+            if weaponShopChoice == "Buy":
+                if gold >= 10:
+                    gold -= 10
+                    stoneOwned = True
+                    print("Purchase successful! Equip your item in the inventory!")
+                else:
+                    print("You don't have enough gold! Come back when you're a little... hmmm... richer.")
+            elif weaponShopChoice == "Back":
+                shopSection()
+            else:
+                shopSection()
+
+
+    #armor
+    if category == "Armor":
+        armorShopChoice = input("Which armor do you want to see?\n\nLeather Armor\nChainmail Armor: ").lower()
+        if armorShopChoice not in armor:
+            while armorShopChoice not in armor:
+                armorShopChoice = input("Please select an armor.\n\nLeather Armor\nChainmail Armor: ").lower()
+
+
+        #leather armor
+        if armorShopChoice== "leather armor":
+            print("Cost: 12 gold\nDEF: 5\nNo special effects")
+            weaponShopChoice = input("(Buy, Back): ").capitalize()
+            if weaponShopChoice == "Buy":
+                if gold >= 12:
+                    gold -= 12
+                    leatherArOwned = True
+                    print("Purchase successful! Equip your item in the inventory!")
+                else:
+                    print("You don't have enough gold! Come back when you're a little... hmmm... richer.")
+            elif weaponShopChoice == "Back":
+                shopSection()
+            else:
+                shopSection()
+
+        #chainmail armor
+        if armorShopChoice== "leather armor":
+            print("Cost: 20 gold\nDEF: 10\nNo special effects")
+            weaponShopChoice = input("(Buy, Back): ").capitalize()
+            if weaponShopChoice == "Buy":
+                if gold >= 20:
+                    gold -= 20
+                    chainArOwned = True
+                    print("Purchase successful! Equip your item in the inventory!")
+                else:
+                    print("You don't have enough gold! Come back when you're a little... hmmm... richer.")
+            elif weaponShopChoice == "Back":
+                shopSection()
+            else:
+                shopSection()
+
+    elif category == "Back":
+        pass
+
+
+
+
+
+def fightSection():
+    global gold, enemy, randEnemy, onFire, bleeding, onFireMax, poisoned, playerHealth, actions, enemyOptions, dodgeSuccess, playerRoll, botRoll, profit, playerAct, playerName
+    enemy = input(
+        "Choose your enemy! (Goblin, Slime, Spider, Skeleton, Orc, Wizard, Dragon, Troll, Random, Back): ").capitalize()
+    if enemy not in enemyOptions and enemy != "Random":
+        while enemy not in enemyOptions and enemy != "Random":
+            enemy = input(
+                "Please input the name of an enemy. (Goblin, Slime, Spider, Skeleton, Orc, Wizard, Dragon, Troll, Random): ").capitalize()
+
+    #enemies
+    if enemy == "Random":
+        randEnemy = random.choice(enemyOptions)
+    if enemy == "Skeleton" or randEnemy == "Skeleton":
+        enemy = "Skeleton"
+        botHealth = 100
+        botMaxHP = 100
+        enemyAttack = 25
+        enemyRoll = 50
+        enemyHeal = 10
+        profit = 15
+    elif enemy == "Goblin" or randEnemy == "Goblin":
+        enemy = "Goblin"
+        botHealth = 75
+        botMaxHP = 75
+        enemyAttack = 15
+        enemyRoll = 10
+        enemyHeal = 7
+        profit = 3
+    elif enemy == "Orc" or randEnemy == "Orc":
+        enemy = "Orc"
+        botHealth = 150
+        botMaxHP = 150
+        enemyAttack = 40
+        enemyRoll = 95
+        enemyHeal = 5
+        profit = 25
+        actions = ("attack", "counter", "dodge", "dodge", "heal", "heal", "heal", "spiky club")
+    elif enemy == "Slime" or randEnemy == "Slime":
+        enemy = "Slime"
+        botHealth = 30
+        botMaxHP = 30
+        enemyAttack = 10
+        enemyRoll = 5
+        enemyHeal = 30
+        profit = 7
+        actions = ("attack", "heal", "counter", "dodge", "heal")
+    elif enemy == "Spider" or randEnemy == "Spider":
+        enemy = "Spider"
+        botHealth = 50
+        botMaxHP = 50
+        enemyAttack = 15
+        enemyRoll = 30
+        enemyHeal = 20
+        profit = 10
+        actions = ("attack", "heal", "counter", "dodge", "heal", "spider web")
+    elif enemy == "Wizard" or randEnemy == "Wizard":
+        enemy = "Wizard"
+        botHealth = 150
+        botMaxHP = 150
+        enemyAttack = 15
+        enemyRoll = 35
+        enemyHeal = 15
+        profit = 35
+        actions = ("attack", "heal", "counter", "dodge", "heal", "fire ball")
+    elif enemy == "Dragon" or randEnemy == "Dragon":
+        enemy = "Dragon"
+        botHealth = 300
+        botMaxHP = 300
+        enemyAttack = 20
+        enemyRoll = 35
+        enemyHeal = 50
+        profit = 50
+        actions = ("attack", "counter", "rest", "draconic roar", "fire spray")
+    elif enemy == "Troll" or randEnemy == "Troll":
+        enemy = "Blorbo Bleebus the Troll"
+        botHealth = 500
+        botMaxHP = 500
+        enemyAttack = 30
+        enemyRoll = 80
+        enemyHeal = 20
+        profit = 70
+        actions = ("attack", "counter", "dodge", "heal", "spiky club", "iron fist", "poisoned claymore")
+
+    while True:
+        botChoice = random.choice(actions)
+        playerChoice = None
+
+        print(f"{playerName}'s HP: {playerHealth}/100\n{enemy}'s HP: {botHealth}/{botMaxHP}")
+        # inputs
+        if playerAct:
+            playerChoice = input(f"Choose your action! (1.{move1}, 2.{move2}, 3.{move3}, 4.{move4}): ").lower()
+            if playerChoice not in actions or (
+                    playerChoice != move1 and playerChoice != move2 and playerChoice != move3 and playerChoice != move4 and playerChoice != move5):
+                while playerChoice not in actions or (
+                        playerChoice != move1 and playerChoice != move2 and playerChoice != move3 and playerChoice != move4 and playerChoice != move5):
+                    playerChoice = input(
+                        f"Please input the name of an action. (1.{move1}, 2.{move2}, 3.{move3}, 4.{move4}): ").lower()
+        else:
+            pass
+        playerAct = True
+        print(f"{'-' * 50}")
+        time.sleep(0.5)
+        print(f"{playerName} has used {playerChoice}!\n{enemy} has used {botChoice}!")
+
+        specialAttacks = ("fire ball", "fire spray", "spikey club", "iron fist", "poisoned claymore")
+
+        # dodge
+        if playerChoice == "dodge" and (botChoice in specialAttacks or botChoice == "attack"):
+            playerRoll = random.randint(0, 100)
+            if playerRoll > 50:
+                print(f"{playerName}'s dodge was successful!")
+                botChoice = ""
+            else:
+                print(f"{playerName}'s dodge failed!")
+        if botChoice == "dodge" and playerChoice == "attack":
+            botRoll = random.randint(0, 100)
+            if botRoll > enemyRoll:
+                botHealth += playerAttack
+                print(f"{enemy}'s dodge was successful!")
+            else:
+                print(f"{enemy}'s dodge failed!")
+
+        # special attacks
+        if botChoice == "fire spray":
+            playerHealth -= round(15 - (playerArmor / 100) * 15)
+        if botChoice == "spiky club":
+            playerHealth -= round(40 - (playerArmor / 100) * 40)
+        if botChoice == "fire ball":
+            playerHealth -= round(20 - (playerArmor / 100) * 20)
+        if botChoice == "iron fist":
+            playerHealth -= round(70 - (playerArmor / 100) * 70)
+        if botChoice == "poisoned claymore":
+            playerHealth -= round(30 - (playerArmor / 100) * 30)
+
+        # attack and counter
+        if playerChoice == "counter":
+            if botChoice == "attack":
+                botHealth -= round(enemyAttack * 1.5)
+            else:
+                playerHealth -= round((playerAttack * 0.7) * (1 - playerArmor / 100))
+        elif botChoice == "attack":
+            playerHealth -= round(enemyAttack - (playerArmor / 100) * enemyAttack)
+
+        if botChoice == "counter":
+            if playerChoice == "attack":
+                playerHealth -= round((playerAttack * 1.5) * (1 - playerArmor / 100))
+            else:
+                botHealth -= round(enemyAttack * 0.3)
+        elif playerChoice == "attack":
+            botHealth -= playerAttack
+
+        # heal
+        if playerHealth <= 75 and playerChoice == "heal":
+            playerHealth = playerHealth + 25
+        elif playerHealth > 75 and playerChoice == "heal":
+            playerHealth = 100
+        if enemy == "Slime":
+            if botChoice == "heal":
+                botHealth = botHealth + enemyHeal
+        else:
+            if botHealth <= botMaxHP - enemyHeal and botChoice == "heal":
+                botHealth = botHealth + enemyHeal
+            elif botHealth > botMaxHP - enemyHeal and botChoice == "heal":
+                botHealth = botMaxHP
+
+        # effects
+        if botChoice in fireAttacks and playerRoll < 50:
+            onFire = onFire - onFire + 3
+            onFireMax = 3
+            playerHealth -= 5
+            print(f"{playerName} is on fire! -5HP ({onFire}/3)")
+        else:
+            if onFire > 0:
+                playerHealth -= 5
+                onFire -= 1
+                print(f"{playerName} is on fire! -5HP ({onFire}/3)")
+            else:
+                pass
+
+        if botChoice in bleedAttacks and playerRoll < 50:
+            bleeding = bleeding - bleeding + 5
+            playerHealth -= 3
+            print(f"{playerName} is bleeding! -3HP ({bleeding}/5)")
+        else:
+            if bleeding > 0:
+                playerHealth -= 3
+                bleeding -= 1
+                print(f"{playerName} is bleeding! -3HP ({bleeding}/5)")
+            else:
+                pass
+
+        #poison attacks
+        if botChoice in poisonAttacks and playerRoll < 50:
+            poisoned = True
+            playerHealth -= 1
+            print(f"{playerName} is poisoned! -1HP")
+        else:
+            if poisoned:
+                playerHealth -= 1
+                print(f"{playerName} is poisoned! -1HP")
+            else:
+                pass
+
+        #skip attacks
+        if botChoice in skipAttacks:
+            if botChoice == "spider web":
+                print(f"{playerName} has been webbed!")
+            if botChoice == "draconic roar":
+                print(f"{playerName} has been deafened!")
+            playerAct = False
+
+        playerRoll = 0
+
+        if playerHealth <= 0 or botHealth <= 0:
+            break
+        else:
+            pass
+
+    print(f"{playerName} HP: {playerHealth}/100\n{enemy} HP: {botHealth}/{botMaxHP}")
+    if playerHealth <= 0 and botHealth <= 0:
+        print("You have won!... but at what cost?")
+    elif playerHealth > botHealth:
+        gold += profit
+
+        print(
+            "          _______                     _________ _\n"
+            "|\     /|( _____ )|\     /|  |\     /|\__   __/( (    /|\n"
+            "( \   / )| (   ) || )   ( |  | )   ( |   ) (   |  \  ( |\n"
+            " \ (_) / | |   | || |   | |  | | _ | |   | |   |   \ | |\n"
+            "  \   /  | |   | || |   | |  | |( )| |   | |   | (\ \) |\n"
+            "   ) (   | |   | || |   | |  | || || |   | |   | | \   |\n"
+            "   | |   | (___) || (___) |  | () () |___) (___| )  \  |\n"
+            "   \_/   (_______)(_______)  (_______)\_______/|/    )_)\n")
+        print(f"+ {profit} Gold!")
+    else:
+        print("You died!")
+    playerHealth = 100
+
+if playerName is None:
+    playerName = input("What is your name?: ").capitalize()
+
+while True:
+    while gameStartStop is False:
+        gameStart = input("What do you want to do? (Fight, Shop, Inventory): ").capitalize()
+        if gameStart != "Fight" and gameStart != "Shop" and gameStart != "Inventory":
+            while gameStart != "Fight" and gameStart != "Shop" and gameStart != "Inventory":
+                gameStart = input(
+                    "Please input what you want to do. (Fight, Shop, Inventory): ").capitalize()
+
+        if gameStart == "Shop":
+            shopSection()
+        if gameStart == "Fight":
+            fightSection()
+        if gameStart == "Inventory":
+            invSection()
